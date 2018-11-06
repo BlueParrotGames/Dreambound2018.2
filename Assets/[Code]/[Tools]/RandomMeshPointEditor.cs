@@ -41,6 +41,7 @@ public class RandomMeshPointEditor : Editor
         GUI.color = calColor;
         if (GUILayout.Button("Calculate points", buttonStyle))
         {
+            Debug.ClearDeveloperConsole();
             r.CalculatePoints();
         }
 

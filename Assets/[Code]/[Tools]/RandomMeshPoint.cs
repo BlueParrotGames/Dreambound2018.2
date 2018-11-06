@@ -7,17 +7,24 @@ public class RandomMeshPoint : MonoBehaviour
     public MeshFilter filter;
     private Vector3 randomPoint;
     public List<Vector3> points;
+    public List<Vector3> ripPoints;
 
     public float result;
     public float density;
-    public float radius = 0.5f;
+
+    int pointsToAdd;
+    int attempts = 0;
+    float radius = 0.5f;
 
     public void CalculatePoints()
     {
+        radius = 0.5f;
+        attempts = 0;
         points.Clear();
 
+        Debug.Log(radius);
         float r = Mathf.RoundToInt(Area());
-            Debug.Log("Unrounded Area size: " + Area());
+            //Debug.Log("Unrounded Area size: " + Area());
             Debug.Log("Rounded Area size: " + r);
 
         for (int i = 0; i < r; i++)
@@ -28,28 +35,47 @@ public class RandomMeshPoint : MonoBehaviour
             points.Add(point);
         }
 
-        if (points.Count == r)
+        CheckRadius();
+        pointsToAdd = (int)(r - points.Count);
+        //Debug.Log("dit moet " + (points.Count * points.Count) + " zijn");
+       
+        while(pointsToAdd > 0 && attempts < 2500)
         {
-            foreach(Vector3 p in points)
-            {
-                StartCoroutine(CheckPoint(p));
-            }
+            pointsToAdd--;
+            Vector3 point = GetRandomPointOnMesh(filter.sharedMesh);
+            point += filter.transform.position;
+
+            points.Add(point);
+
+            CheckRadius();
+            attempts++;
+            Debug.Log("Attempted while " + attempts + " times" );
+        }
+
+        if(attempts == 2500)
+        {
+            Debug.LogError("Radius is too high to process, run ended after 2500 attempts.");
+            points.Clear();
         }
     }
 
-    public IEnumerator CheckPoint(Vector3 p)
+    private void CheckRadius()
     {
-        for (int i = 0; i < points.Count; i++)
+        //Gemaakt door Laurens 
+        for (int x = 0; x < points.Count; x++)
         {
-            float dist = Vector3.Distance(p, points[i]);
-            if (dist < radius)
+            for (int j = 0; j < points.Count; j++)
             {
-                Debug.Log((dist < radius).ToString());
+                float dist = (points[x] - points[j]).magnitude;
 
-                Debug.Log("Problematic point: " + " A: " + p + " B: " + points[i] + " Distance: " + Vector3.Distance(p, points[i]) + " ...Removing the point.");
+                if (dist < radius && x != j)
+                {
+                    //Debug.Log("distance under 0.5f " + dist + " removing point");
+                    points.RemoveAt(j);
+                    pointsToAdd++;
+                }
             }
         }
-        yield return null;
     }
 
     public void OnDrawGizmos()
@@ -84,7 +110,7 @@ public class RandomMeshPoint : MonoBehaviour
                 break;
             }
         }
-
+        //als je 10 bomen in spawnt wil je een grotere radius dan .5
         if (triIndex == -1) Debug.LogError("triIndex should never be -1");
 
         Vector3 a = mesh.vertices[mesh.triangles[triIndex * 3]];
@@ -128,3 +154,4 @@ public class RandomMeshPoint : MonoBehaviour
         return sizes;
     }
 }
+//Als David vader wordt ga ik zijn kinderen Davidson noemen <3

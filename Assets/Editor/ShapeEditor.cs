@@ -206,7 +206,6 @@ public class ShapeEditor : Editor
             selectionInfo.pointIndex = -1;
             shapeChangedSinceLastRepaint = true;
         }
-
     }
 
     void HandleLeftMouseDrag(Vector3 mousePosition)
@@ -216,11 +215,11 @@ public class ShapeEditor : Editor
             SelectedShape.points[selectionInfo.pointIndex] = mousePosition;
             shapeChangedSinceLastRepaint = true;
         }
-
     }
 
     void UpdateMouseOverInfo(Vector3 mousePosition)
     {
+
         int mouseOverPointIndex = -1;
         int mouseOverShapeIndex = -1;
         for (int shapeIndex = 0; shapeIndex < shapeCreator.shapes.Count; shapeIndex++)
@@ -270,6 +269,7 @@ public class ShapeEditor : Editor
                         mouseOverLineIndex = i;
                         mouseOverShapeIndex = shapeIndex;
                     }
+
                 }
             }
 
