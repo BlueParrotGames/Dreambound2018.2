@@ -3,12 +3,6 @@ using UnityEngine;
 
 namespace Dreambound.Geometry
 {
-	/*
-     * Handles triangulation of given polygon using the 'ear-clipping' algorithm.
-     * The implementation is based on the following paper:
-     * https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
-     */
-
 	public class Triangulator
     {
         LinkedList<Vertex> vertsInClippedPolygon;

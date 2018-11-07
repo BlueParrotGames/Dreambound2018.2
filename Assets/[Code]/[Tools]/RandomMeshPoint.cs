@@ -9,16 +9,19 @@ public class RandomMeshPoint : MonoBehaviour
     public List<Vector3> points;
     public List<Vector3> ripPoints;
 
+    public List<GameObject> objects;
+
+    public Transform parent;
+
     public float result;
     public float density;
 
     int pointsToAdd;
-    int attempts = 0;
-    float radius = 0.5f;
+    int attempts;
+    public float radius;
 
     public void CalculatePoints()
     {
-        radius = 0.5f;
         attempts = 0;
         points.Clear();
 
@@ -37,7 +40,6 @@ public class RandomMeshPoint : MonoBehaviour
 
         CheckRadius();
         pointsToAdd = (int)(r - points.Count);
-        //Debug.Log("dit moet " + (points.Count * points.Count) + " zijn");
        
         while(pointsToAdd > 0 && attempts < 2500)
         {
@@ -49,14 +51,18 @@ public class RandomMeshPoint : MonoBehaviour
 
             CheckRadius();
             attempts++;
-            Debug.Log("Attempted while " + attempts + " times" );
         }
+
+        Debug.Log("Attempted while " + attempts + " times" );
 
         if(attempts == 2500)
         {
             Debug.LogError("Radius is too high to process, run ended after 2500 attempts.");
             points.Clear();
         }
+
+        if(points.Count > 0) { RandomMeshPointEditor.pointsAvailable = true; }
+        else { RandomMeshPointEditor.pointsAvailable = false; }
     }
 
     private void CheckRadius()
@@ -78,12 +84,29 @@ public class RandomMeshPoint : MonoBehaviour
         }
     }
 
+    public void SpawnObjects()
+    {
+        parent = GameObject.Find("ObjectParent").transform;
+        if (parent == null)
+        {
+            Debug.LogError("No suitable parent was found!, Make sure there's an object called 'ObjectParent' in the Root Hierarchy");
+            return;
+        }
+
+        for(int i = 0; i < points.Count; i++)
+        {
+            int rand = Random.Range(0, objects.Count);
+            GameObject g = Instantiate(objects[rand], points[i], Quaternion.identity, parent);
+        }
+    }
+
     public void OnDrawGizmos()
     {
         foreach (Vector3 pos in points)
         {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawSphere(pos, 0.2f);
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(pos, 0.25f);
+
         }
     }
 
@@ -154,4 +177,3 @@ public class RandomMeshPoint : MonoBehaviour
         return sizes;
     }
 }
-//Als David vader wordt ga ik zijn kinderen Davidson noemen <3
