@@ -9,7 +9,7 @@ using System.Linq;
  * Ignores invalid shapes (contain self-intersections, too few points, overlapping holes)
  */
 
-namespace Dreambound.Geometry
+namespace BPS.Tools.Geometry
 {
     public partial class CompositeShape
     {

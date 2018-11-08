@@ -5,7 +5,7 @@
  * Also provides convenience methods for accessing different hull/hole points
  */
 
-namespace Dreambound.Geometry
+namespace BPS.Tools.Geometry
 {
     public class Polygon
     {

@@ -2,178 +2,179 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RandomMeshPoint : MonoBehaviour
+namespace BPS.Tools.Geometry
 {
-    public MeshFilter filter;
-    private Vector3 randomPoint;
-    public List<Vector3> points;
-    public List<Vector3> ripPoints;
-
-    public List<GameObject> objects;
-
-    public Transform parent;
-
-    public float result;
-    public float density;
-
-    int pointsToAdd;
-    int attempts;
-    public float radius;
-
-    public void CalculatePoints()
+    public class RandomMeshPoint : MonoBehaviour
     {
-        attempts = 0;
-        points.Clear();
+        public MeshFilter filter;
+        private Vector3 randomPoint;
+        public List<Vector3> points;
+        public List<Vector3> ripPoints;
 
-        Debug.Log(radius);
-        float r = Mathf.RoundToInt(Area());
+        public List<GameObject> objects;
+
+        public Transform parent;
+
+        public float result;
+        public float density;
+
+        int pointsToAdd;
+        int attempts;
+        public float radius;
+
+        public void CalculatePoints()
+        {
+            attempts = 0;
+            points.Clear();
+
+            Debug.Log(radius);
+            float r = Mathf.RoundToInt(Area());
             //Debug.Log("Unrounded Area size: " + Area());
             Debug.Log("Rounded Area size: " + r);
 
-        for (int i = 0; i < r; i++)
-        {
-            Vector3 point = GetRandomPointOnMesh(filter.sharedMesh);
-            point += filter.transform.position;
-            
-            points.Add(point);
-        }
+            for (int i = 0; i < r; i++)
+            {
+                Vector3 point = GetRandomPointOnMesh(filter.sharedMesh);
+                point += filter.transform.position;
 
-        CheckRadius();
-        pointsToAdd = (int)(r - points.Count);
-       
-        while(pointsToAdd > 0 && attempts < 2500)
-        {
-            pointsToAdd--;
-            Vector3 point = GetRandomPointOnMesh(filter.sharedMesh);
-            point += filter.transform.position;
-
-            points.Add(point);
+                points.Add(point);
+            }
 
             CheckRadius();
-            attempts++;
-        }
+            pointsToAdd = (int)(r - points.Count);
 
-        Debug.Log("Attempted while " + attempts + " times" );
-
-        if(attempts == 2500)
-        {
-            Debug.LogError("Radius is too high to process, run ended after 2500 attempts.");
-            points.Clear();
-        }
-
-        if(points.Count > 0) { RandomMeshPointEditor.pointsAvailable = true; }
-        else { RandomMeshPointEditor.pointsAvailable = false; }
-    }
-
-    private void CheckRadius()
-    {
-        //Gemaakt door Laurens 
-        for (int x = 0; x < points.Count; x++)
-        {
-            for (int j = 0; j < points.Count; j++)
+            while (pointsToAdd > 0 && attempts < 2500)
             {
-                float dist = (points[x] - points[j]).magnitude;
+                pointsToAdd--;
+                Vector3 point = GetRandomPointOnMesh(filter.sharedMesh);
+                point += filter.transform.position;
 
-                if (dist < radius && x != j)
+                points.Add(point);
+
+                CheckRadius();
+                attempts++;
+            }
+
+            Debug.Log("Attempted while " + attempts + " times");
+
+            if (attempts == 2500)
+            {
+                Debug.LogError("Radius is too high to process, run ended after 2500 attempts.");
+                points.Clear();
+            }
+        }
+
+        private void CheckRadius()
+        {
+            //Gemaakt door Laurens 
+            for (int x = 0; x < points.Count; x++)
+            {
+                for (int j = 0; j < points.Count; j++)
                 {
-                    //Debug.Log("distance under 0.5f " + dist + " removing point");
-                    points.RemoveAt(j);
-                    pointsToAdd++;
+                    float dist = (points[x] - points[j]).magnitude;
+
+                    if (dist < radius && x != j)
+                    {
+                        //Debug.Log("distance under 0.5f " + dist + " removing point");
+                        points.RemoveAt(j);
+                        pointsToAdd++;
+                    }
                 }
             }
         }
-    }
 
-    public void SpawnObjects()
-    {
-        parent = GameObject.Find("ObjectParent").transform;
-        if (parent == null)
+        public void SpawnObjects()
         {
-            Debug.LogError("No suitable parent was found!, Make sure there's an object called 'ObjectParent' in the Root Hierarchy");
-            return;
-        }
-
-        for(int i = 0; i < points.Count; i++)
-        {
-            int rand = Random.Range(0, objects.Count);
-            GameObject g = Instantiate(objects[rand], points[i], Quaternion.identity, parent);
-        }
-    }
-
-    public void OnDrawGizmos()
-    {
-        foreach (Vector3 pos in points)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(pos, 0.25f);
-
-        }
-    }
-
-    Vector3 GetRandomPointOnMesh(Mesh mesh)
-    {
-        float[] sizes = GetTriSizes(mesh.triangles, mesh.vertices);
-        float[] cumulativeSizes = new float[sizes.Length];
-        float total = 0;
-
-        for (int i = 0; i < sizes.Length; i++)
-        {
-            total += sizes[i];
-            cumulativeSizes[i] = total;
-        }
-
-        float randomsample = Random.value * total;
-        int triIndex = -1;
-
-        for (int i = 0; i < sizes.Length; i++)
-        {
-            if (randomsample <= cumulativeSizes[i])
+            try
             {
-                triIndex = i;
-                break;
+                parent = GameObject.Find("ObjectParent").transform;
+            }
+            catch
+            {
+                Debug.LogError("No ObjectParent found!");
+            }
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                int rand = Random.Range(0, objects.Count);
+                GameObject g = Instantiate(objects[rand], points[i], Quaternion.identity, parent);
             }
         }
-        //als je 10 bomen in spawnt wil je een grotere radius dan .5
-        if (triIndex == -1) Debug.LogError("triIndex should never be -1");
 
-        Vector3 a = mesh.vertices[mesh.triangles[triIndex * 3]];
-        Vector3 b = mesh.vertices[mesh.triangles[triIndex * 3 + 1]];
-        Vector3 c = mesh.vertices[mesh.triangles[triIndex * 3 + 2]];
-
-        float r = Random.value;
-        float s = Random.value;
-
-        if (r + s >= 1)
+        public void OnDrawGizmos()
         {
-            r = 1 - r;
-            s = 1 - s;
+            foreach (Vector3 pos in points)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawSphere(pos, 0.25f);
+            }
         }
-        Vector3 pointOnMesh = a + r * (b - a) + s * (c - a);
-        return pointOnMesh;
-    }
 
-    float Area()
-    {
-        Vector3[] vert = filter.sharedMesh.vertices;
-        int[] triangles = filter.sharedMesh.triangles;
-
-        result = 0f;
-        for (int i = 0; i < triangles.Length; i += 3)
+        Vector3 GetRandomPointOnMesh(Mesh mesh)
         {
-            result += (Vector3.Cross(vert[triangles[i + 1]] - vert[triangles[i]],
-                vert[triangles[i + 2]] - vert[triangles[i]])).magnitude;
-        }
-        return result *= density;
-    }
+            float[] sizes = GetTriSizes(mesh.triangles, mesh.vertices);
+            float[] cumulativeSizes = new float[sizes.Length];
+            float total = 0;
 
-    float[] GetTriSizes(int[] tris, Vector3[] verts)
-    {
-        int triCount = tris.Length / 3;
-        float[] sizes = new float[triCount];
-        for (int i = 0; i < triCount; i++)
-        {
-            sizes[i] = .5f * Vector3.Cross(verts[tris[i * 3 + 1]] - verts[tris[i * 3]], verts[tris[i * 3 + 2]] - verts[tris[i * 3]]).magnitude;
+            for (int i = 0; i < sizes.Length; i++)
+            {
+                total += sizes[i];
+                cumulativeSizes[i] = total;
+            }
+
+            float randomsample = Random.value * total;
+            int triIndex = -1;
+
+            for (int i = 0; i < sizes.Length; i++)
+            {
+                if (randomsample <= cumulativeSizes[i])
+                {
+                    triIndex = i;
+                    break;
+                }
+            }
+            //als je 10 bomen in spawnt wil je een grotere radius dan .5
+            if (triIndex == -1) Debug.LogError("triIndex should never be -1");
+
+            Vector3 a = mesh.vertices[mesh.triangles[triIndex * 3]];
+            Vector3 b = mesh.vertices[mesh.triangles[triIndex * 3 + 1]];
+            Vector3 c = mesh.vertices[mesh.triangles[triIndex * 3 + 2]];
+
+            float r = Random.value;
+            float s = Random.value;
+
+            if (r + s >= 1)
+            {
+                r = 1 - r;
+                s = 1 - s;
+            }
+            Vector3 pointOnMesh = a + r * (b - a) + s * (c - a);
+            return pointOnMesh;
         }
-        return sizes;
+
+        float Area()
+        {
+            Vector3[] vert = filter.sharedMesh.vertices;
+            int[] triangles = filter.sharedMesh.triangles;
+
+            result = 0f;
+            for (int i = 0; i < triangles.Length; i += 3)
+            {
+                result += (Vector3.Cross(vert[triangles[i + 1]] - vert[triangles[i]],
+                    vert[triangles[i + 2]] - vert[triangles[i]])).magnitude;
+            }
+            return result *= density;
+        }
+
+        float[] GetTriSizes(int[] tris, Vector3[] verts)
+        {
+            int triCount = tris.Length / 3;
+            float[] sizes = new float[triCount];
+            for (int i = 0; i < triCount; i++)
+            {
+                sizes[i] = .5f * Vector3.Cross(verts[tris[i * 3 + 1]] - verts[tris[i * 3]], verts[tris[i * 3 + 2]] - verts[tris[i * 3]]).magnitude;
+            }
+            return sizes;
+        }
     }
 }

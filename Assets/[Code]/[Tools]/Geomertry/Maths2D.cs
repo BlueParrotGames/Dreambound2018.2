@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Dreambound.Geometry
+namespace BPS.Tools.Geometry
 {
     public static class Maths2D
     {

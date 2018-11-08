@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Linq;
 
-namespace Dreambound.Geometry
+namespace BPS.Tools.Geometry
 {
     public partial class CompositeShape
     {
