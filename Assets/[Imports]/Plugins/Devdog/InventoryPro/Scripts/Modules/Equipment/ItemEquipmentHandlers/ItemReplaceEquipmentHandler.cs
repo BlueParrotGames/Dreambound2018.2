@@ -20,6 +20,11 @@ namespace Devdog.InventoryPro
             }
 
             copy.transform.SetParent(binder.equipTransform.parent); // Same level
+
+            //GameObject p = GameObject.FindGameObjectWithTag("Player");
+            //Debug.Log(p.name);
+            //p.GetComponent<PlayerMovement>().UpdateEquippedGear();
+
             copy.transform.SetSiblingIndex(binder.equipTransform.GetSiblingIndex());
             binder.equipTransform.gameObject.SetActive(false); // Swap the item by disabling the original
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))]
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Attributes")]
@@ -12,6 +13,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float deadzone = 0.25f;
 
     [SerializeField] Animator anim;
+
+    [Header("Gear animating")]
+    [SerializeField] SkinnedMeshRenderer root;
+    [ReadOnly] public List<SkinnedMeshRenderer> skinnedMeshes;
+    [ReadOnly] public List<Animator> animators;
 
     Camera mainCam;
     CharacterController controller;
@@ -23,6 +29,31 @@ public class PlayerMovement : MonoBehaviour
         controller = GetComponent<CharacterController>();
         mainCam = Camera.main;
         anim = GetComponent<Animator>();
+
+        //skinnedMeshes = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+
+        UpdateEquippedGear();
+
+    }
+
+    public void UpdateEquippedGear()
+    {
+        skinnedMeshes.Clear();
+        animators.Clear();
+        Debug.Log("Updating equipped gear!");
+        foreach (SkinnedMeshRenderer s in gameObject.GetComponentsInChildren<SkinnedMeshRenderer>())
+        {
+            skinnedMeshes.Add(s);
+            s.rootBone = root.rootBone;
+            s.bones = root.bones;
+        }
+
+        foreach(Animator a in gameObject.GetComponentsInChildren<Animator>())
+        {
+            animators.Add(a);
+            a.avatar = anim.avatar;
+            a.runtimeAnimatorController = anim.runtimeAnimatorController;
+        }
     }
 
     private void SetValues(string axisX, string axisZ)

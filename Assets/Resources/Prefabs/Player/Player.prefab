@@ -1495,6 +1495,8 @@ MonoBehaviour:
   gravity: 30
   deadzone: 0.25
   anim: {fileID: 0}
+  root: {fileID: 137551152672921438}
+  skinnedMeshes: []
 --- !u!137 &137551152672921438
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
