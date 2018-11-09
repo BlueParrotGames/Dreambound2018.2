@@ -62,8 +62,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector3 lookPoint = camRay.GetPoint(rayLength);
             transform.LookAt(new Vector3(lookPoint.x, transform.position.y, lookPoint.z));
-        }
-        
+        }   
     }
 
     private void Update()
