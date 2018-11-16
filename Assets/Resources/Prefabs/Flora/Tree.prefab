@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33454696787107248}
   - component: {fileID: 23138561974291834}
   - component: {fileID: 114017954112596694}
+  - component: {fileID: 65696750308737012}
   m_Layer: 0
   m_Name: Tree
   m_TagString: Flora
@@ -35,7 +36,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1670621595680962}
-  m_LocalRotation: {x: 0.05431625, y: 0.97612655, z: 0.0820629, w: 0.19362955}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.7121806, y: 2.4168523e-17, z: 1.4870996}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -57,7 +58,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: b452cef96a6bd8e4b858369e56ea7227, type: 3}
+  - {fileID: 2100000, guid: 90146bc392b35a64b963660b3166eed5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,6 +85,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1670621595680962}
   m_Mesh: {fileID: 4300000, guid: b452cef96a6bd8e4b858369e56ea7227, type: 3}
+--- !u!65 &65696750308737012
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1670621595680962}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 5.609588, z: 1}
+  m_Center: {x: 0, y: 2.765731, z: 0}
 --- !u!114 &114017954112596694
 MonoBehaviour:
   m_ObjectHideFlags: 1

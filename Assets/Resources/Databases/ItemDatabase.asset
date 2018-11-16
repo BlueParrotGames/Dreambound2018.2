@@ -15,6 +15,7 @@ MonoBehaviour:
   - {fileID: 114750301012768902, guid: 5e3d9d071b26d8d4ab6f9bb7955c551a, type: 2}
   - {fileID: 114167048140411910, guid: f7883a61b0fd1c54db0ae015b03f950d, type: 2}
   - {fileID: 114871692018666098, guid: 3ba1f4caa49ef18489d463b7cc736b02, type: 2}
+  - {fileID: 114307398029557430, guid: 2655fbed2202b3e4dbb644c4cda0aa96, type: 2}
   rarities:
   - {fileID: 11400000, guid: f1f318c4a135d1f43ab9bd4f247c83ca, type: 2}
   - {fileID: 11400000, guid: 6adce1fbafa540a4ab41ee49288aab85, type: 2}

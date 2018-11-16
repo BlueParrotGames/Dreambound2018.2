@@ -78,6 +78,9 @@ namespace Devdog.InventoryPro
             }
 
             equipSlot.characterCollection.character.stats.SetAll(stats, 1f);
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            Debug.Log(p.name);
+            p.GetComponent<PlayerMovement>().UpdateEquippedGear();
             AudioManager.AudioPlayOneShot(playOnEquip);
         }
 

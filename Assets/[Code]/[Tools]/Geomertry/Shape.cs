@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Dreambound.Geometry
+namespace BPS.Tools.Geometry
 {
    [System.Serializable]
     public class Shape
